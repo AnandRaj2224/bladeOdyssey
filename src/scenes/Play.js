@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 
 class Play extends Phaser.Scene {
   constructor() {
@@ -6,12 +6,20 @@ class Play extends Phaser.Scene {
   }
 
   create() {
+    const map = this.createMap();
+    const layers = this.createLayers(map);
+  }
+  createMap() {
     const map = this.make.tilemap({ key: "map" });
-    const tileset1 = map.addTilesetImage("main_lev_build_1", "tiles-1");
-    // const tileset2 = map.addTilesetImage('main_lev_build_2', 'tiles-2');
+    map.addTilesetImage("main_lev_build_1", "tiles-1");
+    return map;
+  }
 
-    map.createStaticLayer("environment", tileset1);
-    map.createStaticLayer("platforms", tileset1);
+  createLayers(map) {
+    const tileset = map.getTileset("main_lev_build_1");
+    const environment =map.createLayer("environment",tileset);
+    const platforms = map.createLayer("platforms",tileset);
+    return {environment,platforms};
   }
 }
 
