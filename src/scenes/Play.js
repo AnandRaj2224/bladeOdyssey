@@ -20,6 +20,9 @@ class Play extends Phaser.Scene {
     const tileset = map.getTileset("main_lev_build_1");
     const environment =map.createLayer("environment",tileset);
     const platforms = map.createLayer("platforms",tileset);
+
+    platforms.setCollisionByExclusion(-1,true);
+
     return {environment,platforms};
   }
   createPlayer() {
