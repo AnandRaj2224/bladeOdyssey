@@ -20,6 +20,7 @@ class Play extends Phaser.Scene {
       }
     });
 
+    this.createEndOfLevel(playerZones.end,player);
     this.setupFollowupCameraOn(player);
   }
 
@@ -55,12 +56,23 @@ class Play extends Phaser.Scene {
   }
   getPlayerZones(playerZoneLayer) {
     const playerZones = playerZoneLayer.objects;
+    const zones = playerZoneLayer.objects;
 
     return {
-      start : playerZoneLayer[0],
-      end : playerZoneLayer[1]
+      start: zones.find(obj => obj.name === "startZone"),
+      end: zones.find(obj => obj.name === "endZone")    
     }
 
+  }
+  createEndOfLevel(end,player) {
+    const  endOfLevel = this.physics.add.sprite(end.x,end.y,"end")
+    .setSize(5,this.config.height)
+    .setOrigin(0.5,1);
+
+    const eofOverlap = this.physics.add.overlap(player,endOfLevel, () => {
+      eofOverlap.active = false;
+      console.log("pLayer has won!!\n");
+    })
   }
 }
 
