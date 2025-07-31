@@ -1,12 +1,33 @@
 import Phaser from "phaser";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene,x,y) {
-    super(scene,x,y,'player');
+  constructor(scene, x, y) {
+    super(scene, x, y, "player");
 
-    scene.add.exisiting(this);
-    scene.physics.add.exisiting(this);
-
+    scene.add.existing(this);
+    scene.physics.add.existing(this);
+    this.init();
+  }
+  init() {
+    this.gravity = 500;
+    this.playerSpeed = 200;
+    this.setGravityY(this.gravity);
+    this.setCollideWorldBounds(true);
+    this.cursors = this.scene.input.keyboard.createCursorKeys();
   }
 
+  preUpdate(time,delta) {
+    super.preUpdate(time,delta)
+    const { left, right } = this.cursors;
+
+    if (left.isDown) {
+      this.setVelocityX(-this.playerSpeed);
+    } else if (right.isDown) {
+      this.setVelocityX(this.playerSpeed);
+    } else {
+      this.setVelocityX(0);
+    }
+  }
 }
+
+export default Player;
