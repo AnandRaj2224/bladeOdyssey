@@ -13,6 +13,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   init() {
     this.gravity = 500;
     this.playerSpeed = 200;
+    this.jumpCount = 0;
+    this.consecutiveJumps = 1;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.wasd = this.scene.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -36,6 +38,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     const { left, right, space} = this.cursors;
     const { left: a, right: d } = this.wasd;
     const onFloor = this.body.onFloor()
+    const isSpaceJustDown = Phaser.Input.Keyboard.JustDown(space);
 
     if (left.isDown || a.isDown) {
       this.setVelocityX(-this.playerSpeed);
@@ -47,8 +50,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityX(0);
     }
 
-    if (space.isDown && onFloor) {
+    if (isSpaceJustDown && (onFloor || this.jumpCount < this.consecutiveJumps)) {
       this.setVelocityY(-this.playerSpeed * 1.5);
+      this.jumpCount++;
+    }
+    if(onFloor) {
+      this.jumpCount = 0;
     }
     this.body.velocity.x !== 0
       ? this.play("run", true)
