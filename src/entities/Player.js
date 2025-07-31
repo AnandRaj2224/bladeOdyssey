@@ -35,6 +35,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     super.preUpdate(time, delta);
     const { left, right, space} = this.cursors;
     const { left: a, right: d } = this.wasd;
+    const onFloor = this.body.onFloor()
 
     if (left.isDown || a.isDown) {
       this.setVelocityX(-this.playerSpeed);
@@ -46,8 +47,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityX(0);
     }
 
-    if (space.isDown) {
-      this.setVelocityY(-this.playerSpeed);
+    if (space.isDown && onFloor) {
+      this.setVelocityY(-this.playerSpeed * 1.5);
     }
     this.body.velocity.x !== 0
       ? this.play("run", true)
