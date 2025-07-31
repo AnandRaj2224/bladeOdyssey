@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import initAnimations from "./playerAnims"
+import initAnimations from "./playerAnims";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
@@ -14,33 +14,44 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.gravity = 500;
     this.playerSpeed = 200;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
+    this.wasd = this.scene.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+    });
 
     this.setGravityY(this.gravity);
     this.setCollideWorldBounds(true);
 
-    initAnimations(this.scene.anims)
+    initAnimations(this.scene.anims);
   }
 
   initEvents() {
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE,this.update,this);
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 
-  update(time,delta) {
-    super.preUpdate(time,delta)
-    const { left, right } = this.cursors;
+  update(time, delta) {
+    super.preUpdate(time, delta);
+    const { left, right, space} = this.cursors;
+    const { left: a, right: d } = this.wasd;
 
-    if (left.isDown) {
+    if (left.isDown || a.isDown) {
       this.setVelocityX(-this.playerSpeed);
       this.setFlipX(true);
-    } else if (right.isDown) {
+    } else if (right.isDown || d.isDown) {
       this.setVelocityX(this.playerSpeed);
       this.setFlipX(false);
     } else {
       this.setVelocityX(0);
     }
 
-    this.body.velocity.x !== 0 ?
-    this.play('run',true) : this.play('idle',true);
+    if (space.isDown) {
+      this.setVelocityY(-this.playerSpeed);
+    }
+    this.body.velocity.x !== 0
+      ? this.play("run", true)
+      : this.play("idle", true);
   }
 }
 
