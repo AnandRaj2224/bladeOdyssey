@@ -11,7 +11,8 @@ class Play extends Phaser.Scene {
   create() {
     const map = this.createMap();
     const layers = this.createLayers(map);
-    const player = this.createPlayer();
+    const playerZones = this.getPlayerZones(layers.playerZones);
+    const player = this.createPlayer(playerZones);
 
     this.createPlayerColliders(player, {
       colliders : {
@@ -33,13 +34,14 @@ class Play extends Phaser.Scene {
     const platformsColliders = map.createLayer("platforms_colliders", tileset);
     const environment = map.createLayer("environment", tileset);
     const platforms = map.createLayer("platforms", tileset);
+    const playerZones = map.getObjectLayer("player_zones");
 
     platformsColliders.setCollisionByProperty({ collides: true });
 
-    return { environment, platforms, platformsColliders };
+    return { environment, platforms, platformsColliders, playerZones };
   }
-  createPlayer() {
-    return new Player(this, 100, 250);
+  createPlayer(start) {
+    return new Player(this, start.x, start.y);
   }
   createPlayerColliders(player, {colliders}) {
     player
@@ -50,6 +52,15 @@ class Play extends Phaser.Scene {
     this.physics.world.setBounds(0,0,width + mapOffset,height+200)
     this.cameras.main.setBounds(0,0,width + mapOffset,height).setZoom(1.5)
     this.cameras.main.startFollow(player);
+  }
+  getPlayerZones(playerZoneLayer) {
+    const playerZones = playerZoneLayer.objects;
+
+    return {
+      start : playerZoneLayer[0],
+      end : playerZoneLayer[1]
+    }
+
   }
 }
 
