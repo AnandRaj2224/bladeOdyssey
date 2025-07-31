@@ -1,5 +1,5 @@
 export default (anims) => {
-  this.scene.anims.create({
+  anims.create({
     key: "idle",
     frames: anims.generateFrameNumbers("player", {
       start: 0,
@@ -9,7 +9,7 @@ export default (anims) => {
     repeat: -1,
   });
 
-  this.scene.anims.create({
+  anims.create({
     key: "run",
     frames: anims.generateFrameNumbers("player", {
       start: 11,
