@@ -1,6 +1,7 @@
 import * as Phaser from "phaser";
 import Player from "../entities/Player";
 import Birdman from "../entities/Birdman";
+import playerAnims from "../entities/playerAnims";
 
 
 class Play extends Phaser.Scene {
@@ -26,6 +27,7 @@ class Play extends Phaser.Scene {
     this.createEnemyColliders(enemy, {
       colliders : {
         platformsColliders : layers.platformsColliders,
+        player
       }
     });
 
@@ -71,9 +73,10 @@ class Play extends Phaser.Scene {
 
   createEnemyColliders(enemy, {colliders}) {
     enemy
-      .addCollider(colliders.platformsColliders);
-
+      .addCollider(colliders.platformsColliders)
+      .addCollider(colliders.player);
   }
+  
   setupFollowupCameraOn(player) {
     const {height,width,mapOffset} = this.config;
     this.physics.world.setBounds(0,0,width + mapOffset,height+200)
