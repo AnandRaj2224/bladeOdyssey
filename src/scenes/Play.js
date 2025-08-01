@@ -1,6 +1,7 @@
 import * as Phaser from "phaser";
 import Player from "../entities/Player";
-import { platform } from "process";
+import Birdman from "../entities/Birdman";
+
 
 class Play extends Phaser.Scene {
   constructor(config) {
@@ -14,20 +15,31 @@ class Play extends Phaser.Scene {
     const playerZones = this.getPlayerZones(layers.playerZones);
     const player = this.createPlayer(playerZones);
 
+    const enemy = this.createEnemy();
+
     this.createPlayerColliders(player, {
       colliders : {
         platformsColliders : layers.platformsColliders,
       }
     });
 
+    this.createEnemyColliders(enemy, {
+      colliders : {
+        platformsColliders : layers.platformsColliders,
+      }
+    });
+
+
     this.createEndOfLevel(playerZones.end,player);
     this.setupFollowupCameraOn(player);
+
   }
 
   createMap() {
     const map = this.make.tilemap({ key: "map" });
     map.addTilesetImage("main_lev_build_1", "tiles-1");
     return map;
+
   }
 
   createLayers(map) {
@@ -40,20 +52,36 @@ class Play extends Phaser.Scene {
     platformsColliders.setCollisionByProperty({ collides: true });
 
     return { environment, platforms, platformsColliders, playerZones };
+
   }
+
   createPlayer(start) {
     return new Player(this, start.x, start.y);
+
   }
+  createEnemy() {
+    return new Birdman(this, 200,200);
+  }
+
   createPlayerColliders(player, {colliders}) {
     player
       .addCollider(colliders.platformsColliders);
+
+  }
+
+  createEnemyColliders(enemy, {colliders}) {
+    enemy
+      .addCollider(colliders.platformsColliders);
+
   }
   setupFollowupCameraOn(player) {
     const {height,width,mapOffset} = this.config;
     this.physics.world.setBounds(0,0,width + mapOffset,height+200)
     this.cameras.main.setBounds(0,0,width + mapOffset,height).setZoom(1.5)
     this.cameras.main.startFollow(player);
+
   }
+
   getPlayerZones(playerZoneLayer) {
     const playerZones = playerZoneLayer.objects;
     const zones = playerZoneLayer.objects;
@@ -64,6 +92,7 @@ class Play extends Phaser.Scene {
     }
 
   }
+
   createEndOfLevel(end,player) {
     const  endOfLevel = this.physics.add.sprite(end.x,end.y,"end")
     .setSize(5,this.config.height)
@@ -74,6 +103,7 @@ class Play extends Phaser.Scene {
       console.log("pLayer has won!!\n");
     })
   }
+
 }
 
 export default Play;
