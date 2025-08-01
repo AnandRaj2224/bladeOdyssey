@@ -1,7 +1,6 @@
 import * as Phaser from "phaser";
 import Player from "../entities/Player";
-import Birdman from "../entities/Birdman";
-import playerAnims from "../entities/playerAnims";
+import { getEnemyTypes } from '../types';
 
 
 class Play extends Phaser.Scene {
@@ -61,15 +60,15 @@ class Play extends Phaser.Scene {
     return new Player(this, start.x, start.y);
 
   }
-  createEnemies(spawnLayer) {
-     if (!spawnLayer || !spawnLayer.objects) {
-    console.warn("No enemy_spawns layer found in the tilemap.");
-    return [];
-  }
-    return spawnLayer.objects.map( spawnPoint => {
-      return new Birdman(this, spawnPoint.x,spawnPoint.y);
-    })
-  }
+
+  
+createEnemies(spawnLayer) {
+  const enemyTypes = getEnemyTypes();
+  return spawnLayer.objects.map(spawnPoint => {
+    return new enemyTypes[spawnPoint.type](this, spawnPoint.x, spawnPoint.y);
+  });
+}
+
 
   createPlayerColliders(player, {colliders}) {
     player
