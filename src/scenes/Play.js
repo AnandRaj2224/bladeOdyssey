@@ -15,8 +15,7 @@ class Play extends Phaser.Scene {
     const layers = this.createLayers(map);
     const playerZones = this.getPlayerZones(layers.playerZones);
     const player = this.createPlayer(playerZones);
-
-    const enemy = this.createEnemy();
+    const enemies  = this.createEnemies(layers.enemySpawns);
 
     this.createPlayerColliders(player, {
       colliders : {
@@ -24,7 +23,7 @@ class Play extends Phaser.Scene {
       }
     });
 
-    this.createEnemyColliders(enemy, {
+    this.createEnemyColliders(enemies, {
       colliders : {
         platformsColliders : layers.platformsColliders,
         player
@@ -50,10 +49,11 @@ class Play extends Phaser.Scene {
     const environment = map.createLayer("environment", tileset);
     const platforms = map.createLayer("platforms", tileset);
     const playerZones = map.getObjectLayer("player_zones");
+    const enemySpawns = map.getObjectLayer("enemy_spawns");
 
     platformsColliders.setCollisionByProperty({ collides: true });
 
-    return { environment, platforms, platformsColliders, playerZones };
+    return { environment, platforms, platformsColliders, playerZones, enemySpawns };
 
   }
 
@@ -61,8 +61,14 @@ class Play extends Phaser.Scene {
     return new Player(this, start.x, start.y);
 
   }
-  createEnemy() {
-    return new Birdman(this, 200,200);
+  createEnemies(spawnLayer) {
+     if (!spawnLayer || !spawnLayer.objects) {
+    console.warn("No enemy_spawns layer found in the tilemap.");
+    return [];
+  }
+    return spawnLayer.objects.map( spawnPoint => {
+      return new Birdman(this, spawnPoint.x,spawnPoint.y);
+    })
   }
 
   createPlayerColliders(player, {colliders}) {
@@ -71,10 +77,12 @@ class Play extends Phaser.Scene {
 
   }
 
-  createEnemyColliders(enemy, {colliders}) {
-    enemy
-      .addCollider(colliders.platformsColliders)
-      .addCollider(colliders.player);
+  createEnemyColliders(enemies, {colliders}) {
+    enemies.forEach( enemy => {
+      enemy
+        .addCollider(colliders.platformsColliders)
+        .addCollider(colliders.player);
+    })
   }
   
   setupFollowupCameraOn(player) {
