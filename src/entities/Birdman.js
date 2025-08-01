@@ -16,7 +16,7 @@ class Birdman extends Phaser.Physics.Arcade.Sprite {
     this.gravity = 500;
     this.speed = 150;
     this.setGravityY(this.gravity);
-    this.setSize(20,24)
+    this.setSize(20,46)
     this.setOffset(7,20);
     this.setCollideWorldBounds(true);
     this.setOrigin(0.5, 1);
