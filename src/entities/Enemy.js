@@ -1,7 +1,6 @@
+import Phaser from "phaser";
 
-import Phaser from 'phaser';
-
-import collidable from '../mixins/collidable';
+import collidable from "../mixins/collidable";
 
 class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, key) {
@@ -21,8 +20,12 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.gravity = 500;
     this.speed = 250;
     this.timeFromLastTurn = 0;
+    this.maxPatrolDistance = 200;
+    this.currentPatrolDistance = 0;
     this.platformCollidersLayer = null;
-    this.rayGraphics = this.scene.add.graphics({lineStyle: {width: 2, color: 0xaa00aa}});
+    this.rayGraphics = this.scene.add.graphics({
+      lineStyle: { width: 2, color: 0xaa00aa },
+    });
 
     this.body.setGravityY(this.gravity);
     this.setSize(20, 45);
@@ -33,15 +36,26 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.setVelocityX(this.speed);
   }
   initEvents() {
-    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this)
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
 
   update(time, delta) {
-    const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, 30, 1);
-    if (!hasHit && this.timeFromLastTurn + 100 < time) {
+    this.currentPatrolDistance += Math.abs(this.body.deltaX());
+
+    const { ray, hasHit } = this.raycast(
+      this.body,
+      this.platformCollidersLayer,
+      30,
+      1
+    );
+    if (
+      (!hasHit || this.currentPatrolDistance >= this.maxPatrolDistance) &&
+      this.timeFromLastTurn + 100 < time
+    ) {
       this.setFlipX(!this.flipX);
-      this.setVelocityX(this.speed = -this.speed);
+      this.setVelocityX((this.speed = -this.speed));
       this.timeFromLastTurn = time;
+      this.currentPatrolDistance = 0;
     }
 
     this.rayGraphics.clear();
@@ -52,6 +66,5 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.platformCollidersLayer = platformCollidersLayer;
   }
 }
-
 
 export default Enemy;
