@@ -19,6 +19,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.playerSpeed = 150;
     this.jumpCount = 0;
     this.consecutiveJumps = 1;
+     this.hasBeenHit = false;
+    this.bounceVelocity = 250;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.wasd = this.scene.input.keyboard.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -39,6 +41,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update(time, delta) {
+    if (this.hasBeenHit) { return; }
     super.preUpdate(time, delta);
     const { left, right, space } = this.cursors;
     const { left: a, right: d } = this.wasd;
@@ -71,10 +74,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         : this.play("idle", true)
       : this.play("jump", true);
   }
-  takesHit(initiator) {
-    console.log('I have been hit!');
-    console.log('from', initiator);
+   bounceOff() {
+    this.body.touching.right ?
+      this.setVelocity(-this.bounceVelocity, -this.bounceVelocity) :
+      this.setVelocity(this.bounceVelocity, -this.bounceVelocity);
   }
+  takesHit(initiator) {
+this.body.checkCollision.none = true;
+    this.hasBeenHit = true;
+    this.bounceOff();  }
 }
 
 export default Player;
