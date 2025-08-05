@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import initAnimations from './anims/playerAnims';
+import initAnimations from "./anims/playerAnims";
 import collidable from "../mixins/collidable";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
@@ -9,7 +9,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    Object.assign(this,collidable);
+    Object.assign(this, collidable);
 
     this.init();
     this.initEvents();
@@ -19,7 +19,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.playerSpeed = 150;
     this.jumpCount = 0;
     this.consecutiveJumps = 1;
-     this.hasBeenHit = false;
+    this.hasBeenHit = false;
     this.bounceVelocity = 250;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     this.wasd = this.scene.input.keyboard.addKeys({
@@ -31,8 +31,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.setGravityY(this.gravity);
     this.setCollideWorldBounds(true);
-    this.setOrigin(0.5,1)
-    this.setBodySize(20,38);
+    this.setOrigin(0.5, 1);
+    this.setBodySize(20, 38);
     initAnimations(this.scene.anims);
   }
 
@@ -41,7 +41,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update(time, delta) {
-    if (this.hasBeenHit) { return; }
+    if (this.hasBeenHit) {
+      return;
+    }
     super.preUpdate(time, delta);
     const { left, right, space } = this.cursors;
     const { left: a, right: d } = this.wasd;
@@ -74,15 +76,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         : this.play("idle", true)
       : this.play("jump", true);
   }
-   bounceOff() {
-    this.body.touching.right ?
-      this.setVelocity(-this.bounceVelocity, -this.bounceVelocity) :
-      this.setVelocity(this.bounceVelocity, -this.bounceVelocity);
+  bounceOff() {
+    this.body.touching.right
+      ? this.setVelocityX(-this.bounceVelocity)
+      : this.setVelocityX(this.bounceVelocity);
+
+    setTimeout(() => this.setVelocityY(-this.bounceVelocity), 0);
   }
   takesHit(initiator) {
-this.body.checkCollision.none = true;
+    if (this.hasBeenHit) {
+      return;
+    }
     this.hasBeenHit = true;
-    this.bounceOff();  }
+    this.bounceOff();
+  }
 }
 
 export default Player;
