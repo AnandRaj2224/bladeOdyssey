@@ -81,7 +81,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       targets: this,
       duration: 100,
       repeat: -1,
-      tint: 0xffffff
+      tint: 0xff0000,
     })
   }
   bounceOff() {
