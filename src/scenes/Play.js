@@ -1,6 +1,6 @@
 import * as Phaser from "phaser";
 import Player from "../entities/Player";
-import Enemies from '../groups/Enemies';
+import Enemies from "../groups/Enemies";
 
 class Play extends Phaser.Scene {
   constructor(config) {
@@ -13,22 +13,24 @@ class Play extends Phaser.Scene {
     const layers = this.createLayers(map);
     const playerZones = this.getPlayerZones(layers.playerZones);
     const player = this.createPlayer(playerZones);
-    const enemies = this.createEnemies(layers.enemySpawns, layers.platformsColliders);
+    const enemies = this.createEnemies(
+      layers.enemySpawns,
+      layers.platformsColliders
+    );
     this.createPlayerColliders(player, {
-      colliders : {
-        platformsColliders : layers.platformsColliders,
-      }
+      colliders: {
+        platformsColliders: layers.platformsColliders,
+      },
     });
 
     this.createEnemyColliders(enemies, {
-      colliders : {
-        platformsColliders : layers.platformsColliders,
-        player
-      }
+      colliders: {
+        platformsColliders: layers.platformsColliders,
+        player,
+      },
     });
 
-
-    this.createEndOfLevel(playerZones.end,player);
+    this.createEndOfLevel(playerZones.end, player);
     this.setupFollowupCameraOn(player);
   }
 
@@ -38,22 +40,21 @@ class Play extends Phaser.Scene {
 
     this.graphics.clear();
     this.graphics.strokeLineShape(this.line);
-     this.tileHits = layer.getTilesWithinShape(this.line);
+    this.tileHits = layer.getTilesWithinShape(this.line);
 
     if (this.tileHits.length > 0) {
-      this.tileHits.forEach(tile => {
+      this.tileHits.forEach((tile) => {
         tile.index !== -1 && tile.index !== -1 && tile.setCollision(true);
-      })
+      });
     }
     this.drawDebug(layer);
-    this.plotting = false;  
+    this.plotting = false;
   }
 
   createMap() {
     const map = this.make.tilemap({ key: "map" });
     map.addTilesetImage("main_lev_build_1", "tiles-1");
     return map;
-
   }
 
   createLayers(map) {
@@ -66,48 +67,55 @@ class Play extends Phaser.Scene {
 
     platformsColliders.setCollisionByProperty({ collides: true });
 
-    return { environment, platforms, platformsColliders, playerZones, enemySpawns };
-
+    return {
+      environment,
+      platforms,
+      platformsColliders,
+      playerZones,
+      enemySpawns,
+    };
   }
 
   createPlayer(start) {
     return new Player(this, start.x, start.y);
-
   }
 
-  
   createEnemies(spawnLayer, platformsColliders) {
     const enemies = new Enemies(this);
     const enemyTypes = enemies.getTypes();
 
-spawnLayer.objects.forEach((spawnPoint, i) => {
+    spawnLayer.objects.forEach((spawnPoint, i) => {
       //if (i === 1) { return; }
-      const enemy = new enemyTypes[spawnPoint.type](this, spawnPoint.x, spawnPoint.y);
-      enemy.setPlatformColliders(platformsColliders)
+      const enemy = new enemyTypes[spawnPoint.type](
+        this,
+        spawnPoint.x,
+        spawnPoint.y
+      );
+      enemy.setPlatformColliders(platformsColliders);
       enemies.add(enemy);
-    })
+    });
     return enemies;
   }
 
-
-  createPlayerColliders(player, {colliders}) {
-    player
-      .addCollider(colliders.platformsColliders);
-
+  onPlayerCollision(enemy, player) {
+    player.takesHit(enemy);
   }
 
-  createEnemyColliders(enemies, {colliders}) {
-      enemies
-        .addCollider(colliders.platformsColliders)
-        .addCollider(colliders.player);
+  createPlayerColliders(player, { colliders }) {
+    player.addCollider(colliders.platformsColliders);
   }
-  
+
+  createEnemyColliders(enemies, { colliders }) {
+    enemies
+      .addCollider(colliders.platformsColliders)
+      .addCollider(colliders.player, this.onPlayerCollision);
+  }
+
   setupFollowupCameraOn(player) {
-    const {height,width,mapOffset} = this.config;
-    this.physics.world.setBounds(0,0,width + mapOffset,height+200)
-    this.cameras.main.setBounds(0,0,width + mapOffset,height).setZoom(1.5)
+    const { height, width, mapOffset } = this.config;
+    this.physics.world.setBounds(0, 0, width + mapOffset, height + 200);
+    this.cameras.main.setBounds(0, 0, width + mapOffset, height).setZoom(1.5);
     this.cameras.main.startFollow(player);
-
   }
 
   getPlayerZones(playerZoneLayer) {
@@ -115,21 +123,21 @@ spawnLayer.objects.forEach((spawnPoint, i) => {
     const zones = playerZoneLayer.objects;
 
     return {
-      start: zones.find(obj => obj.name === "startZone"),
-      end: zones.find(obj => obj.name === "endZone")    
-    }
-
+      start: zones.find((obj) => obj.name === "startZone"),
+      end: zones.find((obj) => obj.name === "endZone"),
+    };
   }
 
-  createEndOfLevel(end,player) {
-    const  endOfLevel = this.physics.add.sprite(end.x,end.y,"end")
-    .setSize(5,this.config.height)
-    .setOrigin(0.5,1);
+  createEndOfLevel(end, player) {
+    const endOfLevel = this.physics.add
+      .sprite(end.x, end.y, "end")
+      .setSize(5, this.config.height)
+      .setOrigin(0.5, 1);
 
-    const eofOverlap = this.physics.add.overlap(player,endOfLevel, () => {
+    const eofOverlap = this.physics.add.overlap(player, endOfLevel, () => {
       eofOverlap.active = false;
       console.log("pLayer has won!!\n");
-    })
+    });
   }
 }
 
