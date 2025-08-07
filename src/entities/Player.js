@@ -29,11 +29,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
     });
-    
+
     this.health = 100;
     this.hp = new HealthBar(
       this.scene,
-      0,0,
+      this.scene.config.leftTopCorner.x,
+      this.scene.config.leftTopCorner.y,
       this.health
     )
 
