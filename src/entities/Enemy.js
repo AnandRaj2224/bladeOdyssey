@@ -1,10 +1,12 @@
 import Phaser from "phaser";
-import anims from "../mixins/anims";
+
 import collidable from "../mixins/collidable";
+import anims from "../mixins/anims";
 
 class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, key) {
     super(scene, x, y, key);
+
     this.config = scene.config;
 
     scene.add.existing(this);
@@ -24,8 +26,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.timeFromLastTurn = 0;
     this.maxPatrolDistance = 250;
     this.currentPatrolDistance = 0;
+
     this.health = 200;
     this.damage = 10;
+
     this.platformCollidersLayer = null;
     this.rayGraphics = this.scene.add.graphics({
       lineStyle: { width: 2, color: 0xaa00aa },
@@ -37,6 +41,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.setOrigin(0.5, 1);
     this.setVelocityX(this.speed);
   }
+
   initEvents() {
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
   }
@@ -56,7 +61,12 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     this.patrol(time);
   }
+
   patrol(time) {
+    if (!this.body || !this.body.onFloor()) {
+      return;
+    }
+
     this.currentPatrolDistance += Math.abs(this.body.deltaX());
 
     const { ray, hasHit } = this.raycast(
@@ -67,6 +77,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         steepnes: 0.2,
       }
     );
+
     if (
       (!hasHit || this.currentPatrolDistance >= this.maxPatrolDistance) &&
       this.timeFromLastTurn + 100 < time
@@ -86,6 +97,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   setPlatformColliders(platformCollidersLayer) {
     this.platformCollidersLayer = platformCollidersLayer;
   }
+
+  // Enemy is source of the damage for the player
+  deliversHit() {}
+
   takesHit(source) {
     source.deliversHit(this);
     this.health -= source.damage;

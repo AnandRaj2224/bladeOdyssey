@@ -16,7 +16,7 @@ class Projectiles extends Phaser.Physics.Arcade.Group {
     this.timeFromLastProjectile = null;
   }
 
-fireProjectile(initiator) {
+fireProjectile(initiator,anim) {
   const projectile = this.getFirstDead(false);
 
   if (!projectile) {
@@ -39,7 +39,7 @@ fireProjectile(initiator) {
     projectile.setFlipX(true);
   }
 
-  projectile.fire(centerX, center.y);
+  projectile.fire(centerX, center.y,anim);
   this.timeFromLastProjectile = getTimestamp();
 }
 }
