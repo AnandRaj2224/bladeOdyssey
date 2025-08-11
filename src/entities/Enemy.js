@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-
+import anims from "../mixins/anims";
 import collidable from "../mixins/collidable";
 
 class Enemy extends Phaser.Physics.Arcade.Sprite {
@@ -12,6 +12,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     // Mixins
     Object.assign(this, collidable);
+    Object.assign(this, anims);
 
     this.init();
     this.initEvents();
