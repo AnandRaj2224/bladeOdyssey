@@ -1,33 +1,29 @@
+
 import Phaser from 'phaser';
+import Projectile from './Projectile';
 
+class Projectiles extends Phaser.Physics.Arcade.Group {
 
-class Projectile extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, key) {
-    super(scene, x, y, key);
+  constructor(scene) {
+    super(scene.physics.world, scene);
 
-    scene.add.existing(this);
-    scene.physics.add.existing(this);
-
-    this.speed = 300;
-     this.maxDistance = 200;
-    this.traveledDistance = 0;
+    this.createMultiple({
+      frameQuantity: 5,
+      active: false,
+      visible: false,
+      key: 'iceball',
+      classType: Projectile
+    })
   }
 
-  preUpdate(time, delta) {
-    super.preUpdate(time, delta);
+  fireProjectile() {
+    const projectile = this.getFirstDead(false);
 
-    this.traveledDistance += this.body.deltaAbsX();
+    if (!projectile) { return; }
 
-    if (this.traveledDistance >= this.maxDistance) {
-      this.destroy();
-    }
-  }
-
-  fire() {
-    console.log('Firing the projectile');
-    this.setVelocityX(this.speed);
+    projectile.fire();
   }
 
 }
 
-export default Projectile;
+export default Projectiles;
