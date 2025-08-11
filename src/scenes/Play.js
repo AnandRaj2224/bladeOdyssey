@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import Player from "../entities/Player";
 import Enemies from "../groups/Enemies";
 
-import initAnims from "../anims";
+import initAnims from "../entities/anims";
 
 class Play extends Phaser.Scene {
   constructor(config) {
@@ -69,12 +69,12 @@ class Play extends Phaser.Scene {
 
   createLayers(map) {
     const tileset = map.getTileset("main_lev_build_1");
-    const platformsColliders = map.createStaticLayer(
+    const platformsColliders = map. createLayer(
       "platforms_colliders",
       tileset
     );
-    const environment = map.createStaticLayer("environment", tileset);
-    const platforms = map.createStaticLayer("platforms", tileset);
+    const environment = map. createLayer("environment", tileset);
+    const platforms = map. createLayer("platforms", tileset);
     const playerZones = map.getObjectLayer("player_zones");
     const enemySpawns = map.getObjectLayer("enemy_spawns");
 
