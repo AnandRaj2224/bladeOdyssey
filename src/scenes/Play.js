@@ -4,7 +4,7 @@ import Enemies from "../groups/Enemies";
 import Collectables from "../groups/Collectables";
 import Hud from "../hud";
 
-import initAnims from "../anims";
+import initAnims from "../entities/anims";
 
 class Play extends Phaser.Scene {
   constructor(config) {
@@ -56,18 +56,13 @@ class Play extends Phaser.Scene {
 
   createLayers(map) {
     const tileset = map.getTileset("main_lev_build_1");
-    const platformsColliders = map.createStaticLayer(
-      "platforms_colliders",
-      tileset
-    );
-    const environment = map
-      .createStaticLayer("environment", tileset)
-      .setDepth(-2);
-    const platforms = map.createStaticLayer("platforms", tileset);
+    const platformsColliders = map.createLayer("platforms_colliders", tileset);
+    const environment = map.createLayer("environment", tileset).setDepth(-2);
+    const platforms = map.createLayer("platforms", tileset);
     const playerZones = map.getObjectLayer("player_zones");
     const enemySpawns = map.getObjectLayer("enemy_spawns");
     const collectables = map.getObjectLayer("collectables");
-    const traps = map.createStaticLayer("traps", tileset);
+    const traps = map.createLayer("traps", tileset);
 
     platformsColliders.setCollisionByProperty({ collides: true });
     traps.setCollisionByExclusion(-1);

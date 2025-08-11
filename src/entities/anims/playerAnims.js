@@ -22,7 +22,7 @@ export default (anims) => {
 
   anims.create({
     key: "throw",
-    frames: anims.generateFrameNumbers("player-throw", { start: 0, end: 7 }),
+    frames: anims.generateFrameNumbers("player-throw", { start: 0, end: 6 }),
     frameRate: 14,
     repeat: 0,
   });
