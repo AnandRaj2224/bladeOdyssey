@@ -6,6 +6,7 @@ import anims from "../mixins/anims";
 import Projectiles from "../attacks/Projectiles";
 import MeleeWeapon from "../attacks/MeleeWeapon";
 import { getTimestamp } from "../utils/functions";
+import EventEmitter from "../events/Emitter";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
@@ -37,7 +38,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.meleeWeapon = new MeleeWeapon(this.scene, 0, 0, "sword-default");
     this.timeFromLastSwing = null;
 
-    this.health = 30;
+    this.health = 10;
+    this.health = 1000;
     this.hp = new HealthBar(
       this.scene,
       this.scene.config.leftTopCorner.x + 5,
@@ -62,9 +64,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    if (this.hasBeenHit || this.isSliding) {
+    if (this.hasBeenHit || this.isSliding || !this.body) {
       return;
     }
+
+    if (this.getBounds().top > this.scene.config.height) {
+      EventEmitter.emit("PLAYER_LOOSE");
+      return;
+    }
+
     const { left, right, space } = this.cursors;
     const isSpaceJustDown = Phaser.Input.Keyboard.JustDown(space);
     const onFloor = this.body.onFloor();
@@ -169,11 +177,16 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.hasBeenHit) {
       return;
     }
+
+    this.health -= source.damage || source.properties.damage || 0;
+    if (this.health <= 0) {
+      EventEmitter.emit("PLAYER_LOOSE");
+      return;
+    }
+
     this.hasBeenHit = true;
     this.bounceOff(source);
     const hitAnim = this.playDamageTween();
-
-    this.health -= source.damage || source.properties.damage || 0;
     this.hp.decrease(this.health);
 
     source.deliversHit && source.deliversHit(this);
