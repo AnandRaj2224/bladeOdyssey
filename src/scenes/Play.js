@@ -5,7 +5,7 @@ import Collectables from "../groups/Collectables";
 import Hud from "../hud";
 import EventEmitter from "../events/Emitter";
 
-import initAnims from "../entities/anims";
+import initAnims from "../anims";
 
 class Play extends Phaser.Scene {
   constructor(config) {

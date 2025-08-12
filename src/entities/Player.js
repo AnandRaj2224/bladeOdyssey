@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import HealthBar from "../hud/HealthBar";
-import initAnimations from "./anims/playerAnims";
+import initAnimations from "../anims/playerAnims";
 import collidable from "../mixins/collidable";
 import anims from "../mixins/anims";
 import Projectiles from "../attacks/Projectiles";

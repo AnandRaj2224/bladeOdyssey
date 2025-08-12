@@ -1,5 +1,5 @@
 import Enemy from "./Enemy";
-import initAnims from "./anims/snakyAnims";
+import initAnims from "../anims/snakyAnims";
 import Projectiles from "../attacks/Projectiles";
 
 class Snaky extends Enemy {
