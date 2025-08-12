@@ -11,7 +11,7 @@ class BaseScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(0, 0, "menu-bg").setOrigin(0).setScale(2.7);
+    this.add.image(0, 0, "menu-bg").setOrigin(0).setScale(3.5);
 
     if (this.config.canGoBack) {
       const backButton = this.add

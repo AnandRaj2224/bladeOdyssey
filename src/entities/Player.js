@@ -31,20 +31,31 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.hasBeenHit = false;
     this.isSliding = false;
     this.bounceVelocity = 250;
-    this.cursors = this.scene.input.keyboard.createCursorKeys();
 
-     this.jumpSound = this.scene.sound.add('jump', {volume: 0.2});
-    this.projectileSound = this.scene.sound.add('projectile-launch', {volume: 0.2});
-    this.stepSound = this.scene.sound.add('step', {volume: 0.2});
-    this.swipeSound = this.scene.sound.add('swipe', {volume: 0.2});
+    // Arrow keys + WASD
+    this.cursors = this.scene.input.keyboard.createCursorKeys();
+    this.keys = this.scene.input.keyboard.addKeys({
+      W: Phaser.Input.Keyboard.KeyCodes.W,
+      A: Phaser.Input.Keyboard.KeyCodes.A,
+      S: Phaser.Input.Keyboard.KeyCodes.S,
+      D: Phaser.Input.Keyboard.KeyCodes.D,
+      R: Phaser.Input.Keyboard.KeyCodes.R, // projectile
+      E: Phaser.Input.Keyboard.KeyCodes.E, // melee
+    });
+
+    this.jumpSound = this.scene.sound.add("jump", { volume: 0.2 });
+    this.projectileSound = this.scene.sound.add("projectile-launch", {
+      volume: 0.2,
+    });
+    this.stepSound = this.scene.sound.add("step", { volume: 0.2 });
+    this.swipeSound = this.scene.sound.add("swipe", { volume: 0.2 });
 
     this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
     this.projectiles = new Projectiles(this.scene, "iceball-1");
     this.meleeWeapon = new MeleeWeapon(this.scene, 0, 0, "sword-default");
     this.timeFromLastSwing = null;
 
-    this.health = 10;
-    this.health = 1000;
+    this.health = 30;
     this.hp = new HealthBar(
       this.scene,
       this.scene.config.leftTopCorner.x + 5,
@@ -68,11 +79,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       repeat: -1,
       callbackScope: this,
       callback: () => {
-        if (this.isPlayingAnims('run')) {
+        if (this.isPlayingAnims("run")) {
           this.stepSound.play();
         }
-      }
-    })
+      },
+    });
   }
 
   initEvents() {
@@ -90,14 +101,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     const { left, right, space } = this.cursors;
-    const isSpaceJustDown = Phaser.Input.Keyboard.JustDown(space);
+    const { W, A, S, D } = this.keys;
+
+    const moveLeft = left.isDown || A.isDown;
+    const moveRight = right.isDown || D.isDown;
+    const jumpPressed = Phaser.Input.Keyboard.JustDown(space) || Phaser.Input.Keyboard.JustDown(W);
+
     const onFloor = this.body.onFloor();
 
-    if (left.isDown) {
+    // Horizontal movement
+    if (moveLeft) {
       this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;
       this.setVelocityX(-this.playerSpeed);
       this.setFlipX(true);
-    } else if (right.isDown) {
+    } else if (moveRight) {
       this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
       this.setVelocityX(this.playerSpeed);
       this.setFlipX(false);
@@ -105,10 +122,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityX(0);
     }
 
-    if (
-      isSpaceJustDown &&
-      (onFloor || this.jumpCount < this.consecutiveJumps)
-    ) {
+    // Jump
+    if (jumpPressed && (onFloor || this.jumpCount < this.consecutiveJumps)) {
       this.jumpSound.play();
       this.setVelocityY(-this.playerSpeed * 2);
       this.jumpCount++;
@@ -122,6 +137,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
+    // Animations
     onFloor
       ? this.body.velocity.x !== 0
         ? this.play("run", true)
@@ -130,12 +146,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   handleAttacks() {
-    this.scene.input.keyboard.on("keydown-Q", () => {
+    // Projectile - now R instead of Q
+    this.scene.input.keyboard.on("keydown-R", () => {
       this.projectileSound.play();
       this.play("throw", true);
       this.projectiles.fireProjectile(this, "iceball");
     });
 
+    // Melee attack - still E
     this.scene.input.keyboard.on("keydown-E", () => {
       if (
         this.timeFromLastSwing &&
@@ -143,6 +161,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       ) {
         return;
       }
+
       this.swipeSound.play();
       this.play("throw", true);
       this.meleeWeapon.swing(this);
@@ -151,21 +170,34 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   handleMovements() {
+    // Slide with DOWN or S
     this.scene.input.keyboard.on("keydown-DOWN", () => {
-      // if (!this.body.onFloor()) { return; }
-
-      this.body.setSize(this.width, this.height / 2);
-      this.setOffset(0, this.height / 2);
-      this.setVelocityX(0);
-      this.play("slide", true);
-      this.isSliding = true;
+      this.startSlide();
     });
-
     this.scene.input.keyboard.on("keyup-DOWN", () => {
-      this.body.setSize(this.width, 38);
-      this.setOffset(0, 0);
-      this.isSliding = false;
+      this.endSlide();
     });
+
+    this.scene.input.keyboard.on("keydown-S", () => {
+      this.startSlide();
+    });
+    this.scene.input.keyboard.on("keyup-S", () => {
+      this.endSlide();
+    });
+  }
+
+  startSlide() {
+    this.body.setSize(this.width, this.height / 2);
+    this.setOffset(0, this.height / 2);
+    this.setVelocityX(0);
+    this.play("slide", true);
+    this.isSliding = true;
+  }
+
+  endSlide() {
+    this.body.setSize(this.width, 38);
+    this.setOffset(0, 0);
+    this.isSliding = false;
   }
 
   playDamageTween() {

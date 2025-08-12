@@ -28,7 +28,8 @@ class SpriteEffect extends Phaser.Physics.Arcade.Sprite {
   }
 
   placeEffect() {
-    if (!this.target || this.body) {
+    // Fix: Return early if no target OR no body
+    if (!this.target || !this.body) {
       return;
     }
     const center = this.target.getCenter();

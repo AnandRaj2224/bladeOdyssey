@@ -18,9 +18,7 @@ class Play extends Phaser.Scene {
     this.hud = new Hud(this, 0, 0);
 
     this.playBgMusic();
-        this.collectSound = this.sound.add('coin-pickup', {volume: 0.2});
-
-
+    this.collectSound = this.sound.add("coin-pickup", { volume: 0.2 });
 
     const map = this.createMap();
     initAnims(this.anims);
@@ -33,7 +31,6 @@ class Play extends Phaser.Scene {
       layers.platformsColliders
     );
     const collectables = this.createCollectables(layers.collectables);
-
 
     this.createEnemyColliders(enemies, {
       colliders: {
@@ -81,17 +78,19 @@ class Play extends Phaser.Scene {
     const tileset = map.getTileset("main_lev_build_1");
     const tilesetBg = map.getTileset("bg_spikes_tileset");
 
-    map.createLayer("distance", tilesetBg).setDepth(-12);
-
-    const platformsColliders = map.createLayer("platforms_colliders", tileset);
-    const environment = map.createLayer("environment", tileset).setDepth(-2);
+    map.createLayer("distance_layer", tilesetBg).setDepth(-12);
+    const platformsColliders = map
+      .createLayer("platforms_colliders", tileset)
+      .setAlpha(0);
+    const environment = map.createLayer("farBgEnv", tileset).setDepth(-2);
     const platforms = map.createLayer("platforms", tileset);
     const playerZones = map.getObjectLayer("player_zones");
     const enemySpawns = map.getObjectLayer("enemy_spawns");
     const collectables = map.getObjectLayer("collectables");
     const traps = map.createLayer("traps", tileset);
 
-    platformsColliders.setCollisionByProperty({ collides: true });
+    // With this new line:
+    platformsColliders.setCollisionByExclusion([-1], true);
     traps.setCollisionByExclusion(-1);
 
     return {
@@ -194,7 +193,7 @@ class Play extends Phaser.Scene {
   onCollect(entity, collectable) {
     this.score += collectable.score;
     this.hud.updateScoreboard(this.score);
-     this.collectSound.play();
+    this.collectSound.play();
     collectable.disableBody(true, true);
   }
 

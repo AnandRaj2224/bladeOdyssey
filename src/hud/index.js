@@ -14,6 +14,7 @@ class Hud extends Phaser.GameObjects.Container {
       rightTopCorner.y + 10
     );
     this.setScrollFactor(0);
+    this.setDepth(99);
 
     this.fontSize = 20;
     this.setupList();
