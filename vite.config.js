@@ -4,6 +4,7 @@ import copy from 'rollup-plugin-copy';
 import path from 'path';
 
 export default defineConfig({
+   base: '/bladeOdyssey/',
   plugins: [
     polyfillNode(),
     copy({
