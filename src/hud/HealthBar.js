@@ -1,7 +1,6 @@
-import * as Phaser from 'phaser';
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 class HealthBar {
   constructor(scene, x, y, scale = 1, health) {
-    this.bar = new Phaser.GameObjects.Graphics(scene);
     this.bar = new Phaser.GameObjects.Graphics(scene);
     this.x = x / scale;
     this.y = y / scale;

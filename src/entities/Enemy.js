@@ -1,4 +1,4 @@
-import * as Phaser from 'phaser';
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 import collidable from "../mixins/collidable";
 import anims from "../mixins/anims";
 

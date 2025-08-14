@@ -1,4 +1,5 @@
-import * as Phaser from 'phaser';import Player from "../entities/Player";
+import * as Phaser from 'phaser/dist/phaser.esm.js';
+import Player from "../entities/Player";
 import Enemies from "../groups/Enemies";
 import Collectables from "../groups/Collectables";
 import Hud from "../hud";

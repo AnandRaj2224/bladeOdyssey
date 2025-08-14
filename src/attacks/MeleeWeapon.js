@@ -1,4 +1,5 @@
-import * as Phaser from 'phaser';import EffectManager from "../effects/EffectManager";
+import * as Phaser from 'phaser/dist/phaser.esm.js';
+import EffectManager from "../effects/EffectManager";
 
 class MeleeWeapon extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, weaponName) {

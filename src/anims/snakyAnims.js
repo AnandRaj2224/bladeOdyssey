@@ -1,3 +1,4 @@
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 export default (anims) => {
   if (!anims.exists("snaky-walk")) {
     anims.create({

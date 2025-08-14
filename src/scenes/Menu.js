@@ -1,5 +1,5 @@
 import BaseScene from "./BaseScene";
-
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 class MenuScene extends BaseScene {
   constructor(config) {
     super("MenuScene", config);

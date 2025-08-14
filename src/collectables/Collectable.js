@@ -1,5 +1,4 @@
-
-import * as Phaser from 'phaser';
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 class Collectable extends Phaser.Physics.Arcade.Sprite {
 constructor(scene, x, y, key) {
 super(scene, x, y, key);

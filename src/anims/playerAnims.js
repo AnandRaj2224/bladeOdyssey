@@ -1,3 +1,4 @@
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 export default (anims) => {
   // Player animations
   if (!anims.exists("idle")) {

@@ -1,4 +1,4 @@
-import * as Phaser from 'phaser';
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 export default {
   addCollider(otherGameobject, callback, context) {
     this.scene.physics.add.collider(

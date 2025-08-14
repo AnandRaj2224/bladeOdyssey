@@ -1,6 +1,7 @@
 import Enemy from "./Enemy";
 import initAnims from "../anims/snakyAnims";
 import Projectiles from "../attacks/Projectiles";
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 
 class Snaky extends Enemy {
   constructor(scene, x, y) {

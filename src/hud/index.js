@@ -1,4 +1,4 @@
-import * as Phaser from 'phaser';
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 class Hud extends Phaser.GameObjects.Container {
   constructor(scene, x, y) {
     super(scene, x, y);

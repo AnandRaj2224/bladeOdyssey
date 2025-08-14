@@ -1,5 +1,5 @@
 import SpriteEffect from "./SpriteEffect";
-
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 class EffectManager {
   constructor(scene) {
     this.scene = scene;

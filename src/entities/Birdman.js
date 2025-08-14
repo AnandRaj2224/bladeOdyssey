@@ -1,6 +1,6 @@
 import Enemy from "./Enemy";
 import initAnims from "../anims/birdmanAnims";
-
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 class Birdman extends Enemy {
   constructor(scene, x, y) {
     super(scene, x, y, "birdman");

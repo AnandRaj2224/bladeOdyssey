@@ -1,3 +1,4 @@
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 export default (anims) => {
   anims.create({
     key: "hit-effect",

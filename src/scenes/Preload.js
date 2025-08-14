@@ -1,4 +1,4 @@
-import * as Phaser from 'phaser';
+import * as Phaser from 'phaser/dist/phaser.esm.js';
 class Preload extends Phaser.Scene {
   constructor() {
     super("PreloadScene");
