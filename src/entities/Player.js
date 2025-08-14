@@ -1,5 +1,4 @@
-import Phaser from "phaser";
-import HealthBar from "../hud/HealthBar";
+import * as Phaser from 'phaser';import HealthBar from "../hud/HealthBar";
 import initAnimations from "../anims/playerAnims";
 import collidable from "../mixins/collidable";
 import anims from "../mixins/anims";

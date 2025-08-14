@@ -1,5 +1,4 @@
-import Phaser from "phaser";
-
+import * as Phaser from 'phaser';
 class EventEmitter extends Phaser.Events.EventEmitter {
   constructor() {
     super();

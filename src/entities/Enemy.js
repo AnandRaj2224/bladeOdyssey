@@ -1,5 +1,4 @@
-import Phaser from "phaser";
-
+import * as Phaser from 'phaser';
 import collidable from "../mixins/collidable";
 import anims from "../mixins/anims";
 

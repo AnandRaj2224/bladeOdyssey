@@ -1,5 +1,4 @@
-import Phaser from "phaser";
-import EffectManager from "../effects/EffectManager";
+import * as Phaser from 'phaser';import EffectManager from "../effects/EffectManager";
 
 class Projectile extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, key) {

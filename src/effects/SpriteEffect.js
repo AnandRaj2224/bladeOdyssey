@@ -1,5 +1,4 @@
-import Phaser from "phaser";
-
+import * as Phaser from 'phaser';
 class SpriteEffect extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, effectName, impactPosition) {
     super(scene, x, y);

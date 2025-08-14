@@ -1,5 +1,4 @@
-import Phaser from "phaser";
-
+import * as Phaser from 'phaser';
 class BaseScene extends Phaser.Scene {
   constructor(key, config) {
     super(key);

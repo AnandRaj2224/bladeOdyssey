@@ -1,5 +1,4 @@
-import Phaser from "phaser";
-
+import * as Phaser from 'phaser';
 class Hud extends Phaser.GameObjects.Container {
   constructor(scene, x, y) {
     super(scene, x, y);
